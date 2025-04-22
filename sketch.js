@@ -32,8 +32,8 @@ function handleFile(file) {
 
 function classifyImage() {
   if (img && classifier) {
-    image(img, 0, 0, 224, 224); // canvas’a çiz
-    let input = get(0, 0, 224, 224); // canvas’tan al
+    image(img, 0, 0, 224, 224);
+    let input = get(0, 0, 224, 224);
     classifier.classify(input, gotResult);
   }
 }
