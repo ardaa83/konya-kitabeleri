@@ -16,7 +16,7 @@ function setup() {
   createCanvas(600, 600);
   let constraints = {
     video: {
-      facingMode: { "environment" }
+      facingMode: { ideal: "environment" }
     },
     audio: false
   };
