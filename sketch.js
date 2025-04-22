@@ -9,7 +9,7 @@ let bilgiler = {
 };
 
 function preload() {
-  classifier = ml5.imageClassifier("https://ardaa83.github.io/konya-kitabelerimodel/model.json");
+  classifier = ml5.imageClassifier("https://ardaa83.github.io/konya-kitabeleri/model/model.json");
 }
 
 function setup() {
