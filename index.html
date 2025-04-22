@@ -38,7 +38,7 @@
 
     function setup() {
       createCanvas(600, 500);
-      video = createCapture(constraints);
+      video = createCapture(VIDEO);
       video.size(224, 224);
       video.hide();
       classifier = ml5.imageClassifier("https://ardaa83.github.io/konya-kitabeleri/model/model.json", video, modelReady);
