@@ -1,11 +1,5 @@
 let classifier;
 let img;
-let constraints = {
-  video: {
-    facingMode: { exact: "environment" } // arka kamera
-  },
-  audio: false
-};
 let label = "Henüz tahmin yapılmadı.";
 let bilgiler = {
   "Konevi Camii Kitabesi": "Bu mübarek mamure içindeki muhakkik ve rabbani alim Sadreddin Muhammed ibn ishak ibn Muhammed'in -Allah kendisinden razı olsun- türbesi; vakviyesinde şartları belli edildiği ve yazıldığı şekilde kendisinin vakfeylediği kitapları ihtiva eden kütüphanesiyle beraber ashabından; kalpleriyle ve kalıplarıyla Tanrı'ya yönelen salih fakirler adına 673 yılı aylarında yapıldı",
@@ -20,6 +14,15 @@ function preload() {
 
 function setup() {
   createCanvas(600, 600);
+  let constraints = {
+  video: {
+    facingMode: { exact: "environment" } // arka kamera
+  },
+  audio: false
+};
+  video = createCapture(constraints);
+  video.size(224, 224);
+  video.hide();
   let uploadBtn = createFileInput(handleFile);
   uploadBtn.position(20, 20);
   textAlign(CENTER, CENTER);
