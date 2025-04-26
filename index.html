@@ -28,6 +28,7 @@
 
   <!-- Chatbot Alanı -->
   <div id="chat">
+    <div id="cevap" style="margin-top:20px; font-size:18px; color:darkblue;"></div>
     <input id="soru" type="text" placeholder="Bir soru yazın" style="width:300px;"/>
     <button onclick="gonder()">Sor</button>
   </div>
@@ -116,7 +117,7 @@
       });
 
       const data = await response.json();
-      alert(data.choices[0].message.content);
+      document.getElementById("cevap").innerText = data.choices[0].message.content;
     }
   </script>
 </body>
