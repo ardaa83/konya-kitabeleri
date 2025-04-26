@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <title>Konya Kitabeleri</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.7.4/dist/tf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/ml5@0.12.2/dist/ml5.min.js"></script>
   <style>
     body {
@@ -17,21 +17,11 @@
     canvas {
       margin-top: 20px;
     }
-    #chat {
-      margin-top: 30px;
-    }
   </style>
 </head>
 <body>
   <h1>Konya Kitabeleri</h1>
   <p>Kameradan görüntü alınarak kitabeler otomatik tanınır.</p>
-
-  <!-- Chatbot Alanı -->
-  <div id="chat">
-    <div id="cevap" style="margin-top:20px; font-size:18px; color:darkblue;"></div>
-    <input id="soru" type="text" placeholder="Bir soru yazın" style="width:300px;"/>
-    <button onclick="gonder()">Sor</button>
-  </div>
 
   <script>
     let classifier;
@@ -39,17 +29,21 @@
     let label = "Model yükleniyor...";
     let bilgiler = {
       "Konevi Camii Kitabesi": "Bu mübarek mamure içindeki muhakkik ve rabbani alim Sadreddin Muhammed ibn ishak ibn Muhammed'in -Allah kendisinden razı olsun- türbesi; vakviyesinde şartları belli edildiği ve yazıldığı şekilde kendisinin vakfeylediği kitapları ihtiva eden kütüphanesiyle beraber ashabından; kalpleriyle ve kalıplarıyla Tanrı'ya yönelen salih fakirler adına 673 yılı aylarında yapıldı",
-      "Haghia Elena Kilisesi Kitabesi": "Haghia Elena Kilisesi Kitabesi": "1- 327 Tarihinde bu şerif kilisemizi Aya Elena 2- Mihail Arhankolos isminde kurdu temeli 3-Halen Kilisemizin üçüncü tamiri şevketlü 4-Sultan Mahmud efendimiz ihsan eyledi emri 5-Epit Robos Sarraf Hacı İliya oldu tekmil nazırı 6- Mihail Arhankolos'un şefaati ile hal teala 7- İmdad edenler ve zahmet çekenlere verecek ecri Sene: 18 Şubat 1833",
+      "Haghia Elena Kilisesi Kitabesi": "1- 327 Tarihinde bu şerif kilisemizi Aya Elena 2- Mihail Arhankolos isminde kurdu temeli 3-Halen Kilisemizin üçüncü tamiri şevketlü 4-Sultan Mahmud efendimiz ihsan eyledi emri 5-Epit Robos Sarraf Hacı İliya oldu tekmil nazırı 6- Mihail Arhankolos'un şefaati ile hal teala 7- İmdad edenler ve zahmet çekenlere verecek ecri Sene: 18 Şubat 1833",
       "Abdül Mümin Mescidi Kitabesi": "1-Muğarebe Mescidi olarak bilinen bu mübarek mescidin yenilenmesini; Büyük sultan, Allah'ın alemdeki gölgesi, fethin babası (fatih), müslümanların sultanı Gıyassedin Keyhüsrev bin Kılıçarslan -Allah onun devletini devamlı kılıp yardım etsin- döneminde 2-Allah'ın rahmetine muhtaç, zayıf bir kul olan Hac Emiri'nin oğlu Mahmud -Allah onun saadetini devamlı kılsın ve ona güzel bir son versin- 674 yılında emretti. Hamd Allah'a mahsustur, O birdir. Salat, peygamberimiz Muhammed'in (s.a.v.) üzerine olsun",
       "Karatay Medresesi Kitabesi": "Ulu Tanrı şöyle buyuruyor: 'Allah iyilik yapanların ecrini sevabını katiyen zayi etmez.' Bu mübarek mamurenin kurulmasını, 649 yılı aylarında Kılıçaslan oğlu Mesud oğlu Kılıçaslan oğlu Lehid Sultan Keyhüsrevzade, Tanrının yeryüzünde gölgesi, din ve dünyanın ulusu fetih babası Sultan Keykavus'un hükümdarlığı günlerinde Abdullah oğlu Karatayi emretti. Tanrı bunu yaptıranı mağfiret etsin."
+
+
     };
 
     function setup() {
       createCanvas(600, 500);
       let constraints = {
-        video: { facingMode: { ideal: "environment" } },
-        audio: false
-      };
+    video: {
+      facingMode: { ideal: "environment" }
+    },
+    audio: false
+  };
       video = createCapture(constraints);
       video.size(224, 224);
       video.hide();
@@ -71,54 +65,35 @@
         return;
       }
       if (results && results[0]) {
-        if (results[0].confidence < 0.6) {
-          label = "Kitabe algılanamdı";
-        } else {
-          label = results[0].label;
-        }
+        label = results[0].label;
       }
       classifyVideo();
     }
 
     function draw() {
-      background(240);
-      image(video, width / 2 - 112, height / 2 - 224, 224, 224);
+  background(240);
 
-      fill(0);
-      textSize(20);
-      textAlign(CENTER);
-      text("Tahmin: " + label, width / 2, height - 160);
+  image(video, width / 2 - 112, height / 2 - 224, 224, 224);
 
-      if (bilgiler[label]) {
-        fill(255);
-        rectMode(CENTER);
-        rect(width / 2, height - 120, 540, 120, 12);
+  fill(0);
+  textSize(20);
+  textAlign(CENTER);
+  text("Tahmin: " + label, width / 2, height - 160);
 
-        fill(0);
-        textSize(16);
-        textAlign(CENTER, CENTER);
-        text(bilgiler[label], width / 2, height - 120, 500);
-      }
-    }
+  if (bilgiler[label]) {
+    // Arka plan kutusu
+    fill(255);
+    rectMode(CENTER);
+    rect(width / 2, height - 120, 1080, 200, 24);
 
-    async function gonder() {
-      let mesaj = document.getElementById("soru").value;
-      
-      const response = await fetch("https://api.openai.com/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Authorization": "Bearer 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", 
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          model: "gpt-3.5-turbo",
-          messages: [{ role: "user", content: mesaj }]
-        })
-      });
+    // Metin
+    fill(0);
+    textSize(16);
+    textAlign(CENTER, CENTER);
+    text(bilgiler[label], width / 2, height - 200, 500);
+  }
+}
 
-      const data = await response.json();
-      document.getElementById("cevap").innerText = data.choices[0].message.content;
-    }
   </script>
 </body>
 </html>
