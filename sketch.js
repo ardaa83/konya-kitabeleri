@@ -62,6 +62,7 @@ function gotResult(error, results) {
         } else {        
         label = results[0].label;
       }
+    classifyVideo();
     }
 
 function draw() {
