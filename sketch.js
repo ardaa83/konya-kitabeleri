@@ -56,14 +56,12 @@ function gotResult(error, results) {
     return;
   }
 
-  if (results && results[0]) { 
-        if (results[0].confidence < 0.3) {
-          label = "Kitabe algılanamadı"; 
-        } else {        
-        label = results[0].label;
-      }
-    classifyVideo();
-    }
+  if (results && results[0]) {
+    label = results[0].label;
+  } else {
+    label = "Sonuç alınamadı.";
+  }
+}
 
 function draw() {
   background(240);
