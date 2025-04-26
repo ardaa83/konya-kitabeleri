@@ -56,13 +56,12 @@ function gotResult(error, results) {
     return;
   }
 
- if (results && results[0]) {
-    if (results[0].confidence < 0.3) {
-      label = "Kitabe algılanamadı";
-    } else {
-      label = results[0].label;
-    }
+  if (results && results[0]) {
+    label = results[0].label;
+  } else {
+    label = "Sonuç alınamadı.";
   }
+}
 
 function draw() {
   background(240);
@@ -90,5 +89,4 @@ function draw() {
     text(bilgiler[label], width / 2, height - 70, 500);
   }
 }
-
 
