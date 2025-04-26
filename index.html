@@ -64,9 +64,9 @@
         console.error(error);
         return;
       }
-      f (results && results[0]) {
+      if (results && results[0]) {
         if (results[0].confidence < 0.6) {
-          label = "Kitabe algılanamdı";
+          label = "Kitabe algılanamadı";
         } else {
           label = results[0].label;
         }
