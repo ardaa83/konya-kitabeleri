@@ -64,8 +64,12 @@
         console.error(error);
         return;
       }
-      if (results && results[0]) {
-        label = results[0].label;
+      f (results && results[0]) {
+        if (results[0].confidence < 0.6) {
+          label = "Kitabe algılanamdı";
+        } else {
+          label = results[0].label;
+        }
       }
       classifyVideo();
     }
