@@ -65,6 +65,7 @@ function gotResult(error, results) {
 
 function draw() {
   background(240);
+  image(video, width / 2 - 200, 50, 400, 200);
 
   if (img) {
     imageMode(CENTER);
