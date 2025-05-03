@@ -75,7 +75,7 @@ function draw() {
 
   if (video) {
     imageMode(CENTER);
-    image(video, width / 2, height / 2 - 150, 360, 200);
+    image(video, width / 2, height / 2 - 150, 640, 480);
   }
 
   fill(0);
