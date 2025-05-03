@@ -87,12 +87,12 @@ function draw() {
     // Bilgi kutusu arka planı
     fill(255);
     rectMode(CENTER);
-    rect(width / 2, height - 70, 520, 60, 12);
+    rect(width / 2, height - 70, 450, 60, 12);
 
     // Bilgi metni
     fill(0);
     textSize(16);
     textAlign(CENTER, CENTER);
-    text(bilgiler[label], width / 2, height - 70, 500);
+    text(bilgiler[label], width / 2, height - 70, 400);
   }
 }
