@@ -87,7 +87,7 @@ function draw() {
     fill(0);
     textSize(16);
     textAlign(CENTER, CENTER);
-    text(bilgiler[label], width / 2, height - 70, 500);
+    text(bilgiler[label], width / 2, 550, 320);
   }
 }
 
