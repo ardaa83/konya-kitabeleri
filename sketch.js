@@ -29,7 +29,7 @@ function setup() {
   };
   
   video = createCapture(constraints);
-  video.size(224, 224);
+  video.size(width * 0.8, height * 0.5);
   video.hide();
   let uploadBtn = createFileInput(handleFile);
   uploadBtn.position(20, 20);
