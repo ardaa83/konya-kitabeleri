@@ -45,7 +45,7 @@
     audio: false
   };
       video = createCapture(constraints);
-      video.size(400, 200);
+      video.size(360, 240);
       video.hide();
       classifier = ml5.imageClassifier("https://ardaa83.github.io/konya-kitabeleri/model/model.json", video, modelReady);
     }
@@ -77,7 +77,7 @@
     function draw() {
   background(240);
 
-  image(video, width / 2 - 200, height / 2 - 150, 400, 200);
+  image(video, width / 2 - 180, 40, 360, 240);
 
   fill(0);
   textSize(20);
