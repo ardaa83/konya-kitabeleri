@@ -22,7 +22,7 @@ function setup() {
   };
   
   video = createCapture(constraints);
-  video.size(400, 200);
+  video.size(360, 240);
   video.hide();
   let uploadBtn = createFileInput(handleFile);
   uploadBtn.position(20, 20);
@@ -65,7 +65,7 @@ function gotResult(error, results) {
 
 function draw() {
   background(240);
-  image(video, width / 2 - 200, 50, 400, 200);
+  image(video, width / 2 - 180, 40, 360, 240);
 
   if (img) {
     imageMode(CENTER);
