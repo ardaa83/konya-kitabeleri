@@ -68,7 +68,7 @@ function draw() {
 
   if (img) {
     imageMode(CENTER);
-    image(img, width / 2, height / 2 - 60, 400, 200);
+    image(img, width / 2, height / 2 - 80, 400, 200);
   }
 
   fill(0);
