@@ -7,15 +7,13 @@ let bilgiler = {
   "Abdül Mümin Mescidi Kitabesi": "1-Muğarebe Mescidi olarak bilinen bu mübarek mescidin yenilenmesini; Büyük sultan, Allah'ın alemdeki gölgesi, fethin babası (fatih), müslümanların sultanı Gıyassedin Keyhüsrev bin Kılıçarslan -Allah onun devletini devamlı kılıp yardım etsin- döneminde 2-Allah'ın rahmetine muhtaç, zayıf bir kul olan Hac Emiri'nin oğlu Mahmud -Allah onun saadetini devamlı kılsın ve ona güzel bir son versin- 674 yılında emretti. Hamd Allah'a mahsustur, O birdir. Salat, peygamberimiz Muhammed'in (s.a.v.) üzerine olsun",
   "Karatay Medresesi Kitabesi": "Ulu Tanrı şöyle buyuruyor: 'Allah iyilik yapanların ecrini sevabını katiyen zayi etmez.' Bu mübarek mamurenin kurulmasını, 649 yılı aylarında Kılıçaslan oğlu Mesud oğlu Kılıçaslan oğlu Lehid Sultan Keyhüsrevzade, Tanrının yeryüzünde gölgesi, din ve dünyanın ulusu fetih babası Sultan Keykavus'un hükümdarlığı günlerinde Abdullah oğlu Karatayi emretti. Tanrı bunu yaptıranı mağfiret etsin."
 };
-let video;
-let camWidth, camHeight;
 
 function preload() {
   classifier = ml5.imageClassifier("https://ardaa83.github.io/konya-kitabeleri/model/model.json");
 }
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  createCanvas(600, 600);
   let constraints = {
     video: {
       facingMode: { ideal: "environment" }
@@ -24,7 +22,7 @@ function setup() {
   };
   
   video = createCapture(constraints);
-  video.size(640, 480);
+  video.size(224, 224);
   video.hide();
   let uploadBtn = createFileInput(handleFile);
   uploadBtn.position(20, 20);
@@ -44,8 +42,8 @@ function handleFile(file) {
 
 function classifyImage() {
   if (img && classifier) {
-    image(img, 0, 0, 400, 200);
-    let input = get(0, 0, 400, 200);
+    image(img, 0, 0, 224, 224);
+    let input = get(0, 0, 224, 224);
     classifier.classify(input, gotResult);
   }
 }
@@ -67,34 +65,27 @@ function gotResult(error, results) {
 
 function draw() {
   background(240);
-  camWidth = width * 0.9;
-  camHeight = camWidth * 3 / 4;
-  image(video, width / 2 - 180, 40, 360, 240);
 
-  if (!img) {
+  if (img) {
     imageMode(CENTER);
-    image(video, width * 0.05, height * 0.1, camWidth, camHeight);
+    image(img, width / 2, height / 2 - 60, 300, 300);
   }
 
   fill(0);
-  textSize(22);
+  textSize(20);
   textAlign(CENTER);
-  text("Tahmin: " + label, width / 2, height * 0.75);
+  text("Tahmin: " + label, width / 2, height - 160);
 
   if (bilgiler[label]) {
     // Bilgi kutusu arka planı
     fill(255);
     rectMode(CENTER);
-    rect(width / 2, height * 0.87, width * 0.9, 100, 16);
+    rect(width / 2, height - 70, 520, 60, 12);
 
     // Bilgi metni
     fill(0);
     textSize(16);
     textAlign(CENTER, CENTER);
-    text(bilgiler[label], width / 2, height * 0.87, width * 0.85);
+    text(bilgiler[label], width / 2, height - 70, 500);
   }
 }
-function windowResized() {
-  resizeCanvas(windowWidth, windowHeight);
-}
-
