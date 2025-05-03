@@ -45,7 +45,7 @@
     audio: false
   };
       video = createCapture(constraints);
-      video.size(224, 224);
+      video.size(250, 250);
       video.hide();
       classifier = ml5.imageClassifier("https://ardaa83.github.io/konya-kitabeleri/model/model.json", video, modelReady);
     }
@@ -65,7 +65,7 @@
         return;
       }
       if (results && results[0]) {
-        if (results[0].confidence < 0.85) {
+        if (results[0].confidence < 0.7) {
           label = "Kitabe algılanamadı";
         } else {
           label = results[0].label;
@@ -88,7 +88,7 @@
     // Arka plan kutusu
     fill(255);
     rectMode(CENTER);
-    rect(width / 2, height - 120, 1080, 200, 24);
+    rect(width / 2, height - 120, 720, 180, 24);
 
     // Metin
     fill(0);
