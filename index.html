@@ -45,7 +45,7 @@
     audio: false
   };
       video = createCapture(constraints);
-      video.size(600, 300);
+      video.size(600, 600);
       video.hide();
       classifier = ml5.imageClassifier("https://ardaa83.github.io/konya-kitabeleri/model/model.json", video, modelReady);
     }
