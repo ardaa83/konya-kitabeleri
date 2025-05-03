@@ -81,7 +81,7 @@ function draw() {
     // Bilgi kutusu arka planı
     fill(255);
     rectMode(CENTER);
-    rect(width / 2, height - 70, 520, 60, 12);
+    rect(width / 2, 550, 350, 180, 16);
 
     // Bilgi metni
     fill(0);
