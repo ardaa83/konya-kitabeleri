@@ -26,8 +26,7 @@
   <script>
     let classifier;
     let video;
-    let camWidth = width * 0.9;
-    let camHeight = camWidth * 9 / 16;
+    let camWidth, camHeight;
     let label = "Model yükleniyor...";
     let bilgiler = {
       "Konevi Camii Kitabesi": "Bu mübarek mamure içindeki muhakkik ve rabbani alim Sadreddin Muhammed ibn ishak ibn Muhammed'in -Allah kendisinden razı olsun- türbesi; vakviyesinde şartları belli edildiği ve yazıldığı şekilde kendisinin vakfeylediği kitapları ihtiva eden kütüphanesiyle beraber ashabından; kalpleriyle ve kalıplarıyla Tanrı'ya yönelen salih fakirler adına 673 yılı aylarında yapıldı",
@@ -47,7 +46,7 @@
     audio: false
   };
       video = createCapture(constraints);
-      video.size(360, 240);
+      video.size(640, 480);
       video.hide();
       classifier = ml5.imageClassifier("https://ardaa83.github.io/konya-kitabeleri/model/model.json", video, modelReady);
     }
@@ -78,25 +77,27 @@
 
     function draw() {
   background(240);
+  camWidth = width * 0.9;
+  camHeight = camWidth * 3 / 4;
 
-  image(video, width * 0.05, height * 0.05, camWidth, camHeight);
+  image(video, width * 0.05, height * 0.1, camWidth, camHeight);
 
   fill(0);
-  textSize(width * 0.03);
+  textSize(22);
   textAlign(CENTER);
-  text("Tahmin: " + label, width / 2, 310);
+  text("Tahmin: " + label, width / 2, height * 0.75);
 
   if (bilgiler[label]) {
     // Arka plan kutusu
     fill(255);
     rectMode(CENTER);
-    rect(width / 2, height * 0.85, width * 0.9, height * 0.2, 20);
+    rect(width / 2, height * 0.87, width * 0.9, 100, 16);
 
     // Metin
     fill(0);
-    textSize(width * 0.025);
+    textSize(16);
     textAlign(CENTER, CENTER);
-    text(bilgiler[label], width / 2, 550, 320);
+    text(bilgiler[label], width / 2, height * 0.87, width * 0.85);
   }
 }
     function windowResized() {
