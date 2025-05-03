@@ -75,7 +75,7 @@ function draw() {
   fill(0);
   textSize(20);
   textAlign(CENTER);
-  text("Tahmin: " + label, width / 2, height - 160);
+  text("Tahmin: " + label, width / 2, 310);
 
   if (bilgiler[label]) {
     // Bilgi kutusu arka planı
