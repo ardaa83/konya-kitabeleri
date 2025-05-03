@@ -15,7 +15,7 @@ function preload() {
 }
 
 function setup() {
-  createCanvas(600, 600);
+  createCanvas(windowWidth, windowHeight);
   let constraints = {
     video: {
       facingMode: { ideal: "environment" }
