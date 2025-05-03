@@ -14,6 +14,11 @@ function preload() {
   classifier = ml5.imageClassifier("https://ardaa83.github.io/konya-kitabeleri/model/model.json");
 }
 
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+}
+
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
   let constraints = {
