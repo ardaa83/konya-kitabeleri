@@ -1,5 +1,7 @@
 let classifier;
 let img;
+let camWidth = width * 0.9;
+let camHeight = camWidth * 9 / 16;
 let label = "Henüz tahmin yapılmadı.";
 let bilgiler = {
   "Konevi Camii Kitabesi": "Bu mübarek mamure içindeki muhakkik ve rabbani alim Sadreddin Muhammed ibn ishak ibn Muhammed'in -Allah kendisinden razı olsun- türbesi; vakviyesinde şartları belli edildiği ve yazıldığı şekilde kendisinin vakfeylediği kitapları ihtiva eden kütüphanesiyle beraber ashabından; kalpleriyle ve kalıplarıyla Tanrı'ya yönelen salih fakirler adına 673 yılı aylarında yapıldı",
@@ -13,7 +15,7 @@ function preload() {
 }
 
 function setup() {
-  createCanvas(390, 844);
+  createCanvas(windowWidth, windowHeight);
   let constraints = {
     video: {
       facingMode: { ideal: "environment" }
@@ -27,7 +29,7 @@ function setup() {
   let uploadBtn = createFileInput(handleFile);
   uploadBtn.position(20, 20);
   textAlign(CENTER, CENTER);
-  textSize(18);
+  textSize(width * 0.03);
   background(240);
   text("Bir görsel yükleyin...", width / 2, height / 2);
 }
@@ -73,7 +75,7 @@ function draw() {
   }
 
   fill(0);
-  textSize(20);
+  textSize(width * 0.03);
   textAlign(CENTER);
   text("Tahmin: " + label, width / 2, 310);
 
@@ -81,13 +83,16 @@ function draw() {
     // Bilgi kutusu arka planı
     fill(255);
     rectMode(CENTER);
-    rect(width / 2, 550, 350, 180, 16);
+    rect(width / 2, height * 0.85, width * 0.9, height * 0.2, 20);
 
     // Bilgi metni
     fill(0);
-    textSize(16);
+    textSize(width * 0.025);
     textAlign(CENTER, CENTER);
     text(bilgiler[label], width / 2, 550, 320);
   }
+}
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
 }
 
