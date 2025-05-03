@@ -73,9 +73,9 @@ function gotResult(error, results) {
 function draw() {
   background(240);
 
-  if (img) {
+  if (video) {
     imageMode(CENTER);
-    image(img, width / 2, height / 2 - 60, 300, 300);
+    image(video, width / 2, height / 2);
   }
 
   fill(0);
