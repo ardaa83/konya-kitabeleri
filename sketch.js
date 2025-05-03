@@ -22,7 +22,7 @@ function setup() {
   };
   
   video = createCapture(constraints);
-  video.size(224, 224);
+  video.size(400, 200);
   video.hide();
   let uploadBtn = createFileInput(handleFile);
   uploadBtn.position(20, 20);
@@ -42,8 +42,8 @@ function handleFile(file) {
 
 function classifyImage() {
   if (img && classifier) {
-    image(img, 0, 0, 224, 224);
-    let input = get(0, 0, 224, 224);
+    image(img, 0, 0, 400, 200);
+    let input = get(0, 0, 400, 200);
     classifier.classify(input, gotResult);
   }
 }
@@ -68,7 +68,7 @@ function draw() {
 
   if (img) {
     imageMode(CENTER);
-    image(img, width / 2, height / 2 - 60, 300, 300);
+    image(img, width / 2, height / 2 - 60, 400, 200);
   }
 
   fill(0);
