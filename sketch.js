@@ -84,12 +84,10 @@ function draw() {
   text("Tahmin: " + label, width / 2, height - 160);
 
   if (bilgiler[label]) {
-    // Bilgi kutusu arka planı
     fill(255);
     rectMode(CENTER);
     rect(width / 2, height - 70, 450, 60, 12);
 
-    // Bilgi metni
     fill(0);
     textSize(16);
     textAlign(CENTER, CENTER);
