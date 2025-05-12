@@ -109,5 +109,19 @@
     style="width:100%; height:100%; display:block; border:none;">
   </iframe>
 </div>
+<script>
+  const btn = document.getElementById("padletBtn");
+  const panel = document.getElementById("padletPanel");
+
+  btn.addEventListener("click", () => {
+    if (panel.style.display === "none") {
+      panel.style.display = "block";
+      btn.textContent = "Kapat";
+    } else {
+      panel.style.display = "none";
+      btn.textContent = "Kitabe Ekle";
+    }
+  });
+</script>
 </body>
 </html>
