@@ -3,7 +3,6 @@ let img;
 let kutuGenislik = width * 0.9;
 let kutuYukseklik = height * 0.25;
 let video;
-let camWidth, camHeight;
 let label = "Henüz tahmin yapılmadı.";
 let bilgiler = {
   "Konevi Camii Kitabesi": "Bu mübarek mamure içindeki muhakkik ve rabbani alim Sadreddin Muhammed ibn ishak ibn Muhammed'in -Allah kendisinden razı olsun- türbesi; vakviyesinde şartları belli edildiği ve yazıldığı şekilde kendisinin vakfeylediği kitapları ihtiva eden kütüphanesiyle beraber ashabından; kalpleriyle ve kalıplarıyla Tanrı'ya yönelen salih fakirler adına 673 yılı aylarında yapıldı",
@@ -77,7 +76,9 @@ function draw() {
 
   if (video) {
     imageMode(CENTER);
-    image(video, width / 2, height / 2 - 150, 640, 480);
+    let camWidth = width * 0.8; 
+    let camHeight = camWidth * 3 / 4;
+    image(video, width / 2, height / 2 - 100, camWidth, camHeight);
   }
 
   fill(0);
