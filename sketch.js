@@ -1,5 +1,7 @@
 let classifier;
 let img;
+let kutuGenislik = width * 0.9;
+let kutuYukseklik = height * 0.25;
 let video;
 let camWidth, camHeight;
 let label = "Henüz tahmin yapılmadı.";
@@ -86,11 +88,11 @@ function draw() {
   if (bilgiler[label]) {
     fill(255);
     rectMode(CENTER);
-    rect(width / 2, height - 70, 450, 60, 12);
+    rect(width / 2, height - kutuYukseklik / 2 - 40, kutuGenislik, kutuYukseklik, 24);
 
     fill(0);
-    textSize(16);
+    textSize(width * 0.04);
     textAlign(CENTER, CENTER);
-    text(bilgiler[label], width / 2, height - 70, 400);
+    text(bilgiler[label], width / 2, height - kutuYukseklik / 2 - 40, kutuGenislik * 0.9);
   }
 }
