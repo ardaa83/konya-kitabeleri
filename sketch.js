@@ -78,10 +78,10 @@ function gotResult(error, results) {
         const sonEtiket = sonEtiketler[0];
         const hepsiAyniMi = sonEtiketler.every(l => l === sonEtiket);
 
-        if (hepsiAyniMi) {
+        if (hepsiAyniMi && !tahminTamam) {  
           label = sonEtiket;
           tahminTamam = true;
-        }
+       }
       }
     }
   }
