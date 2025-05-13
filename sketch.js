@@ -1,4 +1,6 @@
 let tahminTamam = false;
+let sonEtiketler = [];
+const ETIKET_TEKRARI = 3;
 let classifier;
 let img;
 let kutuGenislik = width * 0.9;
@@ -68,8 +70,19 @@ function gotResult(error, results) {
     if (results[0].confidence < 0.85) {
       label = "Kitabe algılanamadı";
     } else {
-      label = results[0].label;
-      tahminTamam = true;
+      sonEtiketler.push(results[0].label);
+
+      if (sonEtiketler.length > ETIKET_TEKRARI) {
+        sonEtiketler.shift();
+
+        const sonEtiket = sonEtiketler[0];
+        const hepsiAyniMi = sonEtiketler.every(l => l === sonEtiket);
+
+        if (hepsiAyniMi) {
+          label = sonEtiket;
+          tahminTamam = true;
+        }
+      }
     }
   }
 
@@ -80,9 +93,11 @@ function gotResult(error, results) {
 
 function restartModel() {
   tahminTamam = false;
+  sonEtiketler = [];
   label = "Model yeniden başlatıldı...";
   classifyVideo();
 }
+
 function draw() {
   background(240);
 
