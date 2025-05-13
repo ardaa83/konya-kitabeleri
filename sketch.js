@@ -48,7 +48,7 @@ function gotResult(error, results) {
   }
 
   if (results && results[0]) {
-    if (results[0].confidence >= 0.85) {
+    if (results[0].confidence >= 0.9) {
       sonEtiketler.push(results[0].label);
       
       if (sonEtiketler.length > ETIKET_TEKRARI) {
@@ -67,7 +67,7 @@ function gotResult(error, results) {
   }
 
   if (!tahminTamam) {
-    setTimeout(classifyVideo, 1000);
+    setTimeout(classifyVideo, 2000);
   }
 }
 
