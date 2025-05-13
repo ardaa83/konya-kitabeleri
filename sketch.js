@@ -87,8 +87,8 @@ function gotResult(error, results) {
   }
 
   if (!tahminTamam) {
-    classifyVideo();
-  }
+   setTimeout(classifyVideo, 1000);
+ }
 }
 
 function restartModel() {
