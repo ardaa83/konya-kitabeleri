@@ -94,7 +94,7 @@ function gotResult(error, results) {
 function restartModel() {
   tahminTamam = false;
   sonEtiketler = [];
-  label = "Model yeniden başlatıldı...";
+  label = "Yeniden taranıyor...";
   classifyVideo();
 }
 
