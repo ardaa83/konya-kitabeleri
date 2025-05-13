@@ -37,6 +37,9 @@ function setup() {
   video.hide();
   let uploadBtn = createFileInput(handleFile);
   uploadBtn.position(20, 20);
+  let restartBtn = createButton('Yeniden Tara');
+  restartBtn.position(20, 60);
+  restartBtn.mousePressed(restartModel);
   textAlign(CENTER, CENTER);
   textSize(18);
   background(240);
