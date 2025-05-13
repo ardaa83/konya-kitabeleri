@@ -1,3 +1,4 @@
+let tahminTamam = false;
 let classifier;
 let img;
 let kutuGenislik = width * 0.9;
@@ -59,18 +60,29 @@ function classifyImage() {
 
 function gotResult(error, results) {
   if (error) {
-    console.error("Tahmin sırasında hata:", error);
-    label = "Tahmin başarısız.";
+    console.error(error);
     return;
   }
 
   if (results && results[0]) {
-    label = results[0].label;
-  } else {
-    label = "Sonuç alınamadı.";
+    if (results[0].confidence < 0.75) {
+      label = "Kitabe algılanamadı";
+    } else {
+      label = results[0].label;
+      tahminTamam = true;
+    }
+  }
+
+  if (!tahminTamam) {
+    classifyVideo();
   }
 }
 
+function restartModel() {
+  tahminTamam = false;
+  label = "Model yeniden başlatıldı...";
+  classifyVideo();
+}
 function draw() {
   background(240);
 
