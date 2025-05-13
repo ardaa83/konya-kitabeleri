@@ -101,26 +101,25 @@ function restartModel() {
 function draw() {
   background(240);
 
-  if (video) {
-    imageMode(CENTER);
-    let camWidth = width * 0.8; 
-    let camHeight = camWidth * 3 / 4;
-    image(video, width / 2, height / 2 - 100, camWidth, camHeight);
-  }
+  imageMode(CENTER);
+  let camWidth = width * 0.8;
+  let camHeight = camWidth * 3 / 4;
+  image(video, width / 2, height / 2 - 100, camWidth, camHeight);
 
   fill(0);
-  textSize(20);
+  textSize(width * 0.045);
   textAlign(CENTER);
   text("Tahmin: " + label, width / 2, height - 160);
 
-  if (bilgiler[label]) {
+  if (tahminTamam && bilgiler[label]) {
     fill(255);
     rectMode(CENTER);
-    rect(width / 2, height - kutuYukseklik / 2 - 40, kutuGenislik, kutuYukseklik, 24);
+    rect(width / 2, height - 120, width * 0.9, 160, 16);
 
     fill(0);
-    textSize(width * 0.04);
+    textSize(16);
     textAlign(CENTER, CENTER);
-    text(bilgiler[label], width / 2, height - kutuYukseklik / 2 - 40, kutuGenislik * 0.9);
+    text(bilgiler[label], width / 2, height - 120, width * 0.85);
   }
 }
+
