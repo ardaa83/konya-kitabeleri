@@ -60,20 +60,29 @@
     }
 
     function gotResult(error, results) {
-      if (error) {
-        console.error(error);
-        return;
-      }
-      if (results && results[0]) {
-        if (results[0].confidence < 0.9) {
-          label = "Kitabe algılanamadı";
-        } else {
-          label = results[0].label;
-        }
-      }
-      classifyVideo();
-    }
+  if (error) {
+    console.error(error);
+    return;
+  }
 
+  if (results && results[0]) {
+    if (results[0].confidence >= 0.9) {
+      sonEtiketler.push(results[0].label);
+      
+      if (sonEtiketler.length > ETIKET_TEKRARI) {
+        sonEtiketler.shift();
+      }
+
+   
+      if (sonEtiketler.length === ETIKET_TEKRARI && 
+          sonEtiketler.every(etiket => etiket === sonEtiketler[0])) {
+        tahminTamam = true;
+        sonTahmin = sonEtiketler[0];
+        label = sonTahmin;
+        noLoop(); 
+      }
+    }
+  }
     function draw() {
   background(240);
 
