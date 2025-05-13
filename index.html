@@ -26,10 +26,6 @@
   <script>
     let classifier;
     let video;
-    let tahminTamam = false;
-    let sonTahmin = "";
-    let sonEtiketler = [];
-    const ETIKET_TEKRARI = 3;
     let label = "Model yükleniyor...";
     let bilgiler = {
       "Konevi Camii Kitabesi": "Bu mübarek mamure içindeki muhakkik ve rabbani alim Sadreddin Muhammed ibn ishak ibn Muhammed'in -Allah kendisinden razı olsun- türbesi; vakviyesinde şartları belli edildiği ve yazıldığı şekilde kendisinin vakfeylediği kitapları ihtiva eden kütüphanesiyle beraber ashabından; kalpleriyle ve kalıplarıyla Tanrı'ya yönelen salih fakirler adına 673 yılı aylarında yapıldı",
@@ -64,29 +60,20 @@
     }
 
     function gotResult(error, results) {
-  if (error) {
-    console.error(error);
-    return;
-  }
-
-  if (results && results[0]) {
-    if (results[0].confidence >= 0.9) {
-      sonEtiketler.push(results[0].label);
-      
-      if (sonEtiketler.length > ETIKET_TEKRARI) {
-        sonEtiketler.shift();
+      if (error) {
+        console.error(error);
+        return;
       }
-
-   
-      if (sonEtiketler.length === ETIKET_TEKRARI && 
-          sonEtiketler.every(etiket => etiket === sonEtiketler[0])) {
-        tahminTamam = true;
-        sonTahmin = sonEtiketler[0];
-        label = sonTahmin;
-        noLoop(); 
+      if (results && results[0]) {
+        if (results[0].confidence < 0.75) {
+          label = "Kitabe algılanamadı";
+        } else {
+          label = results[0].label;
+        }
       }
+      classifyVideo();
     }
-  }
+
     function draw() {
   background(240);
 
@@ -133,26 +120,6 @@
     ➕ Kitabe Ekle
   </button>
 </a>
-<button onclick="restartModel()" style="
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 1000;
-  padding: 12px 20px;
-  background-color: #8B5E3C;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  transition: background-color 0.3s ease;
-" 
-onmouseover="this.style.backgroundColor='#70452C'" 
-onmouseout="this.style.backgroundColor='#8B5E3C'">
-  Yeniden Tara
-</button>
 </script>
 </body>
 </html>
