@@ -51,10 +51,10 @@ function handleFile(file) {
   }
 }
 
-function classifyImage() {
-  if (img && classifier) {
-    image(img, 0, 0, 224, 224);
-    let input = get(0, 0, 224, 224);
+function classifyVideo() {
+  if (!tahminTamam && classifier && video) {  
+    let input = video.get();
+    input.resize(224, 224);
     classifier.classify(input, gotResult);
   }
 }
