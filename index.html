@@ -120,7 +120,26 @@
     ➕ Kitabe Ekle
   </button>
 </a>
-<button onclick="restartModel()" style="position: fixed; top: 20px; right: 20px;">Yeniden Tara</button>
+<button onclick="restartModel()" style="
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  padding: 12px 20px;
+  background-color: #8B5E3C;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  transition: background-color 0.3s ease;
+" 
+onmouseover="this.style.backgroundColor='#70452C'" 
+onmouseout="this.style.backgroundColor='#8B5E3C'">
+  Yeniden Tara
+</button>
 </script>
 </body>
 </html>
