@@ -1,1 +1,1 @@
-Visual search model for https:/www.konyakitabeleri.com.tr
+Visual search model for www.konyakitabeleri.com.tr
