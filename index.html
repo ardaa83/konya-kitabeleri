@@ -27,23 +27,22 @@
     let classifier;
     let video;
     let label = "Model yükleniyor...";
+    let tahminYapildi = false; // Tahmin yapıldı mı kontrolü
     let bilgiler = {
       "Konevi Camii Kitabesi": "Bu mübarek mamure içindeki muhakkik ve rabbani alim Sadreddin Muhammed ibn ishak ibn Muhammed'in -Allah kendisinden razı olsun- türbesi; vakviyesinde şartları belli edildiği ve yazıldığı şekilde kendisinin vakfeylediği kitapları ihtiva eden kütüphanesiyle beraber ashabından; kalpleriyle ve kalıplarıyla Tanrı'ya yönelen salih fakirler adına 673 yılı aylarında yapıldı",
       "Haghia Elena Kilisesi Kitabesi": "1- 327 Tarihinde bu şerif kilisemizi Aya Elena 2- Mihail Arhankolos isminde kurdu temeli 3-Halen Kilisemizin üçüncü tamiri şevketlü 4-Sultan Mahmud efendimiz ihsan eyledi emri 5-Epit Robos Sarraf Hacı İliya oldu tekmil nazırı 6- Mihail Arhankolos'un şefaati ile hal teala 7- İmdad edenler ve zahmet çekenlere verecek ecri Sene: 18 Şubat 1833",
       "Abdül Mümin Mescidi Kitabesi": "1-Muğarebe Mescidi olarak bilinen bu mübarek mescidin yenilenmesini; Büyük sultan, Allah'ın alemdeki gölgesi, fethin babası (fatih), müslümanların sultanı Gıyassedin Keyhüsrev bin Kılıçarslan -Allah onun devletini devamlı kılıp yardım etsin- döneminde 2-Allah'ın rahmetine muhtaç, zayıf bir kul olan Hac Emiri'nin oğlu Mahmud -Allah onun saadetini devamlı kılsın ve ona güzel bir son versin- 674 yılında emretti. Hamd Allah'a mahsustur, O birdir. Salat, peygamberimiz Muhammed'in (s.a.v.) üzerine olsun",
       "Karatay Medresesi Kitabesi": "Ulu Tanrı şöyle buyuruyor: 'Allah iyilik yapanların ecrini sevabını katiyen zayi etmez.' Bu mübarek mamurenin kurulmasını, 649 yılı aylarında Kılıçaslan oğlu Mesud oğlu Kılıçaslan oğlu Lehid Sultan Keyhüsrevzade, Tanrının yeryüzünde gölgesi, din ve dünyanın ulusu fetih babası Sultan Keykavus'un hükümdarlığı günlerinde Abdullah oğlu Karatayi emretti. Tanrı bunu yaptıranı mağfiret etsin."
-
-
     };
 
     function setup() {
       createCanvas(640, 480);
       let constraints = {
-    video: {
-      facingMode: { ideal: "environment" }
-    },
-    audio: false
-  };
+        video: {
+          facingMode: { ideal: "environment" }
+        },
+        audio: false
+      };
       video = createCapture(constraints);
       video.size(224, 224);
       video.hide();
@@ -56,6 +55,10 @@
     }
 
     function classifyVideo() {
+      // Eğer daha önce başarılı tahmin yapıldıysa, tekrar tahmin yapma
+      if (tahminYapildi) {
+        return;
+      }
       classifier.classify(gotResult);
     }
 
@@ -64,64 +67,45 @@
         console.error(error);
         return;
       }
+      
       if (results && results[0]) {
         if (results[0].confidence < 0.95) {
           label = "Kitabe algılanamadı";
+          // Algılanamadıysa devam et
+          classifyVideo();
         } else {
           label = results[0].label;
+          // Başarılı tahmin yapıldı, artık durduralım
+          tahminYapildi = true;
+          console.log("Kitabe tanındı: " + label);
         }
+      } else {
+        // Sonuç yoksa devam et
+        classifyVideo();
       }
-      classifyVideo();
     }
 
     function draw() {
-  background(240);
+      background(240);
 
-  image(video, width / 2 - 112, height / 2 - 224, 224, 224);
+      image(video, width / 2 - 112, height / 2 - 224, 224, 224);
 
-  fill(0);
-  textSize(20);
-  textAlign(CENTER);
-  text("Tahmin: " + label, width / 2, height - 160);
+      fill(0);
+      textSize(20);
+      textAlign(CENTER);
+      text("Tahmin: " + label, width / 2, height - 160);
 
-  if (bilgiler[label]) {
-    fill(255);
-    rectMode(CENTER);
-    rect(width / 2, height - 120, 1080, 200, 24);
+      if (bilgiler[label]) {
+        fill(255);
+        rectMode(CENTER);
+        rect(width / 2, height - 120, 1080, 200, 24);
 
-    fill(0);
-    textSize(16);
-    textAlign(CENTER, CENTER);
-    text(bilgiler[label], width / 2, height - 200, 500);
-  }
-}
-
+        fill(0);
+        textSize(16);
+        textAlign(CENTER, CENTER);
+        text(bilgiler[label], width / 2, height - 200, 500);
+      }
+    }
   </script>
-  <!--<script src="https://app.dante-ai.com/bubble-embed.js?kb_id=f1014100-0130-4e61-a42e-cd9f4ce6c25f&token=9c741f94-60f3-45b5-8518-220c7143beb7&modeltype=gpt-4-omnimodel-mini&tabs=false"></script>-->
- <!--<a href="https://padlet.com/ardaaydin27283/kitabe-y-kleme-iqqllbn9z3jc6rx5" target="_blank">
-  <button style="
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    z-index: 1000;
-    padding: 12px 20px;
-    background-color: #8B5E3C;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    transition: background-color 0.3s ease;
-  " 
-  onmouseover="this.style.backgroundColor='#70452C'" 
-  onmouseout="this.style.backgroundColor='#8B5E3C'">
-    ➕ Kitabe Ekle
-  </button>
-</a>-->
-</script>
 </body>
 </html>
-
-
