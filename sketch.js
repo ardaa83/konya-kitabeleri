@@ -4,7 +4,7 @@ let kutuGenislik;
 let kutuYukseklik;
 let video;
 let label = "Henüz tahmin yapılmadı.";
-let tahminYapildi = false; // Tahmin yapıldı mı kontrolü
+let tahminYapildi = false;
 let bilgiler = {
   "Konevi Camii Kitabesi": "Bu mübarek mamure içindeki muhakkik ve rabbani alim Sadreddin Muhammed ibn ishak ibn Muhammed'in -Allah kendisinden razı olsun- türbesi; vakviyesinde şartları belli edildiği ve yazıldığı şekilde kendisinin vakfeylediği kitapları ihtiva eden kütüphanesiyle beraber ashabından; kalpleriyle ve kalıplarıyla Tanrı'ya yönelen salih fakirler adına 673 yılı aylarında yapıldı",
   "Haghia Elena Kilisesi Kitabesi": "1- 327 Tarihinde bu şerif kilisemizi Aya Elena 2- Mihail Arhankolos isminde kurdu temeli 3-Halen Kilisemizin üçüncü tamiri şevketlü 4-Sultan Mahmud efendimiz ihsan eyledi emri 5-Epit Robos Sarraf Hacı İliya oldu tekmil nazırı 6- Mihail Arhankolos'un şefaati ile hal teala 7- İmdad edenler ve zahmet çekenlere verecek ecri Sene: 18 Şubat 1833",
@@ -12,46 +12,53 @@ let bilgiler = {
   "Karatay Medresesi Kitabesi": "Ulu Tanrı şöyle buyuruyor: 'Allah iyilik yapanların ecrini sevabını katiyen zayi etmez.' Bu mübarek mamurenin kurulmasını, 649 yılı aylarında Kılıçaslan oğlu Mesud oğlu Kılıçaslan oğlu Lehid Sultan Keyhüsrevzade, Tanrının yeryüzünde gölgesi, din ve dünyanın ulusu fetih babası Sultan Keykavus'un hükümdarlığı günlerinde Abdullah oğlu Karatayi emretti. Tanrı bunu yaptıranı mağfiret etsin."
 };
 
+function getCanvasSize() {
+  const w = Math.max(300, Math.min(windowWidth - 24, 960));
+  const h = Math.max(360, Math.min(windowHeight * 0.72, 760));
+  return { w, h };
+}
+
 function preload() {
   classifier = ml5.imageClassifier("https://ardaa83.github.io/konya-kitabeleri/model/model.json");
 }
 
 function windowResized() {
-  resizeCanvas(windowWidth, windowHeight);
-  kutuGenislik = width * 0.9;
-  kutuYukseklik = height * 0.25;
+  const { w, h } = getCanvasSize();
+  resizeCanvas(w, h);
+  kutuGenislik = width * 0.92;
+  kutuYukseklik = Math.min(height * 0.35, 220);
 }
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
-  kutuGenislik = width * 0.9;
-  kutuYukseklik = height * 0.25;
-  
+  const { w, h } = getCanvasSize();
+  createCanvas(w, h);
+  kutuGenislik = width * 0.92;
+  kutuYukseklik = Math.min(height * 0.35, 220);
+
   let constraints = {
     video: {
       facingMode: { ideal: "environment" }
     },
     audio: false
   };
-  
+
   video = createCapture(constraints);
-  video.size(width * 0.8, height * 0.5);
+  video.size(224, 224);
   video.hide();
-  
+
   let uploadBtn = createFileInput(handleFile);
   uploadBtn.position(20, 20);
-  
+
   textAlign(CENTER, CENTER);
   textSize(18);
   background(240);
   text("Bir görsel yükleyin...", width / 2, height / 2);
-  
-  // Video için sürekli tahmin başlat
+
   classifyVideo();
 }
 
 function handleFile(file) {
-  if (file.type === 'image') {
+  if (file.type === "image") {
     img = loadImage(file.data, () => {
       classifyImage();
     });
@@ -67,11 +74,10 @@ function classifyImage() {
 }
 
 function classifyVideo() {
-  // Eğer daha önce başarılı tahmin yapıldıysa, tekrar tahmin yapma
   if (tahminYapildi || !video || !classifier) {
     return;
   }
-  
+
   classifier.classify(video, gotResultVideo);
 }
 
@@ -81,13 +87,12 @@ function gotResultImage(error, results) {
     label = "Tahmin başarısız.";
     return;
   }
-  
+
   if (results && results[0]) {
     if (results[0].confidence < 0.95) {
       label = "Kitabe algılanamadı";
     } else {
       label = results[0].label;
-      // Başarılı tahmin yapıldı, artık durduralım
       tahminYapildi = true;
       console.log("Kitabe tanındı: " + label);
     }
@@ -99,47 +104,69 @@ function gotResultVideo(error, results) {
     console.error(error);
     return;
   }
-  
+
   if (results && results[0]) {
     if (results[0].confidence < 0.95) {
       label = "Kitabe algılanamadı";
-      // Algılanamadıysa devam et
       classifyVideo();
     } else {
       label = results[0].label;
-      // Başarılı tahmin yapıldı, artık durduralım
       tahminYapildi = true;
       console.log("Kitabe tanındı: " + label);
     }
   } else {
-    // Sonuç yoksa devam et
     classifyVideo();
   }
 }
 
+function getLayout() {
+  const padding = Math.max(12, width * 0.03);
+  const labelHeight = 44;
+  const showInfo = Boolean(bilgiler[label]);
+  const infoHeight = showInfo ? kutuYukseklik : 0;
+  const gap = showInfo ? 12 : 0;
+  const availableHeight = Math.max(180, height - (padding * 2 + labelHeight + infoHeight + gap + 16));
+  const availableWidth = Math.max(180, width - padding * 2);
+  const cameraSize = Math.max(170, Math.min(availableWidth, availableHeight));
+  const cameraX = width / 2;
+  const cameraY = padding + cameraSize / 2;
+  const labelY = cameraY + cameraSize / 2 + 26;
+
+  return {
+    padding,
+    showInfo,
+    infoHeight,
+    cameraSize,
+    cameraX,
+    cameraY,
+    labelY
+  };
+}
+
 function draw() {
   background(240);
-  
+
   if (video) {
+    const layout = getLayout();
+
     imageMode(CENTER);
-    let camWidth = width * 0.8; 
-    let camHeight = camWidth * 3 / 4;
-    image(video, width / 2, height / 2 - 100, camWidth, camHeight);
-  }
-  
-  fill(0);
-  textSize(20);
-  textAlign(CENTER);
-  text("Tahmin: " + label, width / 2, height - 160);
-  
-  if (bilgiler[label]) {
-    fill(255);
-    rectMode(CENTER);
-    rect(width / 2, height - kutuYukseklik / 2 - 40, kutuGenislik, kutuYukseklik, 24);
-    
+    image(video, layout.cameraX, layout.cameraY, layout.cameraSize, layout.cameraSize);
+
     fill(0);
-    textSize(width * 0.04);
+    textSize(Math.max(16, width * 0.03));
     textAlign(CENTER, CENTER);
-    text(bilgiler[label], width / 2, height - kutuYukseklik / 2 - 40, kutuGenislik * 0.9);
+    text("Tahmin: " + label, width / 2, layout.labelY);
+
+    if (layout.showInfo) {
+      const infoCenterY = layout.labelY + layout.infoHeight / 2 + 18;
+      fill(255);
+      rectMode(CENTER);
+      rect(width / 2, infoCenterY, kutuGenislik, layout.infoHeight, 16);
+
+      fill(0);
+      textSize(Math.max(13, width * 0.02));
+      textAlign(CENTER, CENTER);
+      text(bilgiler[label], width / 2, infoCenterY, kutuGenislik * 0.9, layout.infoHeight - 16);
+    }
   }
 }

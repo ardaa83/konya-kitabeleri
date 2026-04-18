@@ -7,6 +7,10 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/ml5@0.12.2/dist/ml5.min.js"></script>
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       font-family: sans-serif;
       text-align: center;
@@ -14,8 +18,52 @@
       margin: 0;
       padding: 20px;
     }
+
+    h1 {
+      margin: 0 0 8px;
+      line-height: 1.2;
+    }
+
+    p {
+      margin: 0 0 12px;
+      line-height: 1.4;
+    }
+
     canvas {
-      margin-top: 20px;
+      display: block;
+      margin: 8px auto 0;
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+    }
+
+    @media (max-width: 900px) {
+      body {
+        padding: 12px;
+      }
+
+      h1 {
+        font-size: 1.4rem;
+      }
+
+      p {
+        font-size: 0.95rem;
+      }
+    }
+
+    @media (max-width: 900px) and (orientation: landscape) {
+      body {
+        padding: 8px;
+      }
+
+      h1 {
+        font-size: 1.2rem;
+      }
+
+      p {
+        font-size: 0.9rem;
+        margin-bottom: 8px;
+      }
     }
   </style>
 </head>
@@ -27,7 +75,7 @@
     let classifier;
     let video;
     let label = "Model yükleniyor...";
-    let tahminYapildi = false; // Tahmin yapıldı mı kontrolü
+    let tahminYapildi = false;
     let bilgiler = {
       "Konevi Camii Kitabesi": "Bu mübarek mamure içindeki muhakkik ve rabbani alim Sadreddin Muhammed ibn ishak ibn Muhammed'in -Allah kendisinden razı olsun- türbesi; vakviyesinde şartları belli edildiği ve yazıldığı şekilde kendisinin vakfeylediği kitapları ihtiva eden kütüphanesiyle beraber ashabından; kalpleriyle ve kalıplarıyla Tanrı'ya yönelen salih fakirler adına 673 yılı aylarında yapıldı",
       "Haghia Elena Kilisesi Kitabesi": "1- 327 Tarihinde bu şerif kilisemizi Aya Elena 2- Mihail Arhankolos isminde kurdu temeli 3-Halen Kilisemizin üçüncü tamiri şevketlü 4-Sultan Mahmud efendimiz ihsan eyledi emri 5-Epit Robos Sarraf Hacı İliya oldu tekmil nazırı 6- Mihail Arhankolos'un şefaati ile hal teala 7- İmdad edenler ve zahmet çekenlere verecek ecri Sene: 18 Şubat 1833",
@@ -35,8 +83,16 @@
       "Karatay Medresesi Kitabesi": "Ulu Tanrı şöyle buyuruyor: 'Allah iyilik yapanların ecrini sevabını katiyen zayi etmez.' Bu mübarek mamurenin kurulmasını, 649 yılı aylarında Kılıçaslan oğlu Mesud oğlu Kılıçaslan oğlu Lehid Sultan Keyhüsrevzade, Tanrının yeryüzünde gölgesi, din ve dünyanın ulusu fetih babası Sultan Keykavus'un hükümdarlığı günlerinde Abdullah oğlu Karatayi emretti. Tanrı bunu yaptıranı mağfiret etsin."
     };
 
+    function getCanvasSize() {
+      const w = Math.max(300, Math.min(windowWidth - 24, 960));
+      const h = Math.max(360, Math.min(windowHeight * 0.72, 760));
+      return { w, h };
+    }
+
     function setup() {
-      createCanvas(640, 480);
+      const { w, h } = getCanvasSize();
+      createCanvas(w, h);
+
       let constraints = {
         video: {
           facingMode: { ideal: "environment" }
@@ -46,7 +102,13 @@
       video = createCapture(constraints);
       video.size(224, 224);
       video.hide();
+
       classifier = ml5.imageClassifier("https://ardaa83.github.io/konya-kitabeleri/model/model.json", video, modelReady);
+    }
+
+    function windowResized() {
+      const { w, h } = getCanvasSize();
+      resizeCanvas(w, h);
     }
 
     function modelReady() {
@@ -55,7 +117,6 @@
     }
 
     function classifyVideo() {
-      // Eğer daha önce başarılı tahmin yapıldıysa, tekrar tahmin yapma
       if (tahminYapildi) {
         return;
       }
@@ -67,43 +128,68 @@
         console.error(error);
         return;
       }
-      
+
       if (results && results[0]) {
         if (results[0].confidence < 0.95) {
           label = "Kitabe algılanamadı";
-          // Algılanamadıysa devam et
           classifyVideo();
         } else {
           label = results[0].label;
-          // Başarılı tahmin yapıldı, artık durduralım
           tahminYapildi = true;
           console.log("Kitabe tanındı: " + label);
         }
       } else {
-        // Sonuç yoksa devam et
         classifyVideo();
       }
+    }
+
+    function getLayout() {
+      const padding = Math.max(12, width * 0.03);
+      const labelHeight = 44;
+      const showInfo = Boolean(bilgiler[label]);
+      const infoHeight = showInfo ? Math.min(height * 0.35, 220) : 0;
+      const gap = showInfo ? 12 : 0;
+      const availableHeight = Math.max(180, height - (padding * 2 + labelHeight + infoHeight + gap + 16));
+      const availableWidth = Math.max(180, width - padding * 2);
+      const cameraSize = Math.max(170, Math.min(availableWidth, availableHeight));
+      const cameraX = width / 2;
+      const cameraY = padding + cameraSize / 2;
+      const labelY = cameraY + cameraSize / 2 + 26;
+
+      return {
+        padding,
+        showInfo,
+        infoHeight,
+        cameraSize,
+        cameraX,
+        cameraY,
+        labelY
+      };
     }
 
     function draw() {
       background(240);
 
-      image(video, width / 2 - 112, height / 2 - 224, 224, 224);
+      const layout = getLayout();
+
+      imageMode(CENTER);
+      image(video, layout.cameraX, layout.cameraY, layout.cameraSize, layout.cameraSize);
 
       fill(0);
-      textSize(20);
-      textAlign(CENTER);
-      text("Tahmin: " + label, width / 2, height - 160);
+      textSize(Math.max(16, width * 0.03));
+      textAlign(CENTER, CENTER);
+      text("Tahmin: " + label, width / 2, layout.labelY);
 
-      if (bilgiler[label]) {
+      if (layout.showInfo) {
+        const infoCenterY = layout.labelY + layout.infoHeight / 2 + 18;
         fill(255);
         rectMode(CENTER);
-        rect(width / 2, height - 120, 1080, 200, 24);
+        rect(width / 2, infoCenterY, width - layout.padding * 2, layout.infoHeight, 16);
 
         fill(0);
-        textSize(16);
+        textSize(Math.max(13, width * 0.02));
         textAlign(CENTER, CENTER);
-        text(bilgiler[label], width / 2, height - 200, 500);
+        text(bilgiler[label], width / 2, infoCenterY, width - layout.padding * 3, layout.infoHeight - 16);
       }
     }
   </script>
