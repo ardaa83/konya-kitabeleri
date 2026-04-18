@@ -191,14 +191,18 @@ function draw() {
 
     if (layout.showInfo) {
       const infoCenterY = layout.labelY + layout.infoHeight / 2 + 18;
+      const infoTextX = (width - kutuGenislik) / 2 + kutuGenislik * 0.05;
+      const infoTextY = infoCenterY - layout.infoHeight / 2 + 8;
+      const infoTextW = kutuGenislik * 0.9;
+      const infoTextH = layout.infoHeight - 16;
       fill(255);
       rectMode(CENTER);
       rect(width / 2, infoCenterY, kutuGenislik, layout.infoHeight, 16);
 
       fill(0);
       textSize(Math.max(13, width * 0.02));
-      textAlign(CENTER, CENTER);
-      text(layout.aktifBilgi, width / 2, infoCenterY, kutuGenislik * 0.9, layout.infoHeight - 16);
+      textAlign(LEFT, TOP);
+      text(layout.aktifBilgi, infoTextX, infoTextY, infoTextW, infoTextH);
     }
   }
 }
