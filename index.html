@@ -113,15 +113,72 @@
       return null;
     }
 
-    function getCanvasSize() {
-      const w = Math.max(300, Math.min(windowWidth - 24, 960));
-      const h = Math.max(360, Math.min(windowHeight * 0.72, 760));
-      return { w, h };
+    function getBaseCanvasWidth() {
+      return Math.max(300, Math.min(windowWidth - 24, 960));
+    }
+
+    function getInfoFontSize(canvasWidth) {
+      return Math.max(13, canvasWidth * 0.02);
+    }
+
+    function getWrappedTextHeight(content, maxWidth, fontSize) {
+      if (!content) return 0;
+
+      textSize(fontSize);
+      textLeading(fontSize * 1.35);
+
+      const words = content.split(/\s+/);
+      const lines = [];
+      let currentLine = "";
+
+      for (const word of words) {
+        const testLine = currentLine ? currentLine + " " + word : word;
+        if (textWidth(testLine) > maxWidth && currentLine) {
+          lines.push(currentLine);
+          currentLine = word;
+        } else {
+          currentLine = testLine;
+        }
+      }
+
+      if (currentLine) {
+        lines.push(currentLine);
+      }
+
+      return lines.length * fontSize * 1.35;
+    }
+
+    function getCanvasHeight(canvasWidth) {
+      const aktifBilgi = getBilgiByLabel(label);
+      const padding = Math.max(12, canvasWidth * 0.03);
+      const infoPadding = Math.max(12, canvasWidth * 0.03);
+      const infoBoxWidth = canvasWidth - padding * 2;
+      const infoTextWidth = infoBoxWidth - infoPadding * 2;
+      const infoFontSize = getInfoFontSize(canvasWidth);
+      const infoTextHeight = aktifBilgi
+        ? getWrappedTextHeight(aktifBilgi, infoTextWidth, infoFontSize)
+        : 0;
+      const infoHeight = aktifBilgi ? Math.max(96, infoTextHeight + infoPadding * 2) : 0;
+      const gap = aktifBilgi ? 16 : 0;
+      const minCameraSize = Math.max(180, Math.min(canvasWidth - padding * 2, canvasWidth * 0.72));
+      const minHeight = padding * 2 + minCameraSize + 44 + gap + infoHeight + 40;
+      const viewportHeight = Math.max(420, Math.min(windowHeight * 0.82, 920));
+      return Math.max(minHeight, viewportHeight);
+    }
+
+    function syncCanvasSize() {
+      const w = getBaseCanvasWidth();
+      const h = getCanvasHeight(w);
+
+      if (typeof resizeCanvas === "function" && typeof width !== "undefined") {
+        resizeCanvas(w, h);
+      } else {
+        createCanvas(w, h);
+      }
     }
 
     function setup() {
-      const { w, h } = getCanvasSize();
-      createCanvas(w, h);
+      syncCanvasSize();
 
       let constraints = {
         video: {
@@ -137,8 +194,7 @@
     }
 
     function windowResized() {
-      const { w, h } = getCanvasSize();
-      resizeCanvas(w, h);
+      syncCanvasSize();
     }
 
     function modelReady() {
@@ -166,6 +222,7 @@
         } else {
           label = results[0].label;
           tahminYapildi = true;
+          syncCanvasSize();
           console.log("Kitabe tanındı: " + label);
         }
       } else {
@@ -176,10 +233,17 @@
     function getLayout() {
       const aktifBilgi = getBilgiByLabel(label);
       const padding = Math.max(12, width * 0.03);
+      const infoPadding = Math.max(12, width * 0.03);
       const labelHeight = 44;
+      const infoFontSize = getInfoFontSize(width);
+      const infoBoxWidth = width - padding * 2;
+      const infoTextWidth = infoBoxWidth - infoPadding * 2;
+      const infoTextHeight = aktifBilgi
+        ? getWrappedTextHeight(aktifBilgi, infoTextWidth, infoFontSize)
+        : 0;
       const showInfo = Boolean(aktifBilgi);
-      const infoHeight = showInfo ? Math.min(height * 0.35, 220) : 0;
-      const gap = showInfo ? 12 : 0;
+      const infoHeight = showInfo ? Math.max(96, infoTextHeight + infoPadding * 2) : 0;
+      const gap = showInfo ? 16 : 0;
       const availableHeight = Math.max(180, height - (padding * 2 + labelHeight + infoHeight + gap + 16));
       const availableWidth = Math.max(180, width - padding * 2);
       const cameraSize = Math.max(170, Math.min(availableWidth, availableHeight));
@@ -189,9 +253,13 @@
 
       return {
         padding,
+        infoPadding,
         showInfo,
         aktifBilgi,
         infoHeight,
+        infoFontSize,
+        infoBoxWidth,
+        infoTextWidth,
         cameraSize,
         cameraX,
         cameraY,
@@ -213,17 +281,19 @@
       text("Tahmin: " + label, width / 2, layout.labelY);
 
       if (layout.showInfo) {
-        const infoCenterY = layout.labelY + layout.infoHeight / 2 + 18;
-        const infoTextX = layout.padding * 1.5;
-        const infoTextY = infoCenterY - layout.infoHeight / 2 + 8;
-        const infoTextW = width - layout.padding * 3;
-        const infoTextH = layout.infoHeight - 16;
+        const infoBoxY = layout.labelY + 18;
+        const infoCenterY = infoBoxY + layout.infoHeight / 2;
+        const infoTextX = layout.padding + layout.infoPadding;
+        const infoTextY = infoBoxY + layout.infoPadding;
+        const infoTextW = layout.infoTextWidth;
+        const infoTextH = layout.infoHeight - layout.infoPadding * 2;
         fill(255);
         rectMode(CENTER);
-        rect(width / 2, infoCenterY, width - layout.padding * 2, layout.infoHeight, 16);
+        rect(width / 2, infoCenterY, layout.infoBoxWidth, layout.infoHeight, 16);
 
         fill(0);
-        textSize(Math.max(13, width * 0.02));
+        textSize(layout.infoFontSize);
+        textLeading(layout.infoFontSize * 1.35);
         textAlign(LEFT, TOP);
         text(layout.aktifBilgi, infoTextX, infoTextY, infoTextW, infoTextH);
       }
