@@ -11,6 +11,36 @@ let bilgiler = {
   "Abdül Mümin Mescidi Kitabesi": "1-Muğarebe Mescidi olarak bilinen bu mübarek mescidin yenilenmesini; Büyük sultan, Allah'ın alemdeki gölgesi, fethin babası (fatih), müslümanların sultanı Gıyassedin Keyhüsrev bin Kılıçarslan -Allah onun devletini devamlı kılıp yardım etsin- döneminde 2-Allah'ın rahmetine muhtaç, zayıf bir kul olan Hac Emiri'nin oğlu Mahmud -Allah onun saadetini devamlı kılsın ve ona güzel bir son versin- 674 yılında emretti. Hamd Allah'a mahsustur, O birdir. Salat, peygamberimiz Muhammed'in (s.a.v.) üzerine olsun",
   "Karatay Medresesi Kitabesi": "Ulu Tanrı şöyle buyuruyor: 'Allah iyilik yapanların ecrini sevabını katiyen zayi etmez.' Bu mübarek mamurenin kurulmasını, 649 yılı aylarında Kılıçaslan oğlu Mesud oğlu Kılıçaslan oğlu Lehid Sultan Keyhüsrevzade, Tanrının yeryüzünde gölgesi, din ve dünyanın ulusu fetih babası Sultan Keykavus'un hükümdarlığı günlerinde Abdullah oğlu Karatayi emretti. Tanrı bunu yaptıranı mağfiret etsin."
 };
+const bilgiAnahtarlari = Object.keys(bilgiler);
+
+function normalizeMetin(value) {
+  return String(value || "")
+    .toLocaleLowerCase("tr-TR")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function getBilgiByLabel(rawLabel) {
+  if (!rawLabel) return null;
+  if (bilgiler[rawLabel]) return bilgiler[rawLabel];
+
+  const cleaned = String(rawLabel).trim();
+  if (bilgiler[cleaned]) return bilgiler[cleaned];
+
+  const normalizedLabel = normalizeMetin(cleaned);
+  for (const key of bilgiAnahtarlari) {
+    if (normalizeMetin(key) === normalizedLabel) {
+      return bilgiler[key];
+    }
+  }
+  for (const key of bilgiAnahtarlari) {
+    const normalizedKey = normalizeMetin(key);
+    if (normalizedKey.includes(normalizedLabel) || normalizedLabel.includes(normalizedKey)) {
+      return bilgiler[key];
+    }
+  }
+  return null;
+}
 
 function getCanvasSize() {
   const w = Math.max(300, Math.min(windowWidth - 24, 960));
@@ -120,9 +150,10 @@ function gotResultVideo(error, results) {
 }
 
 function getLayout() {
+  const aktifBilgi = getBilgiByLabel(label);
   const padding = Math.max(12, width * 0.03);
   const labelHeight = 44;
-  const showInfo = Boolean(bilgiler[label]);
+  const showInfo = Boolean(aktifBilgi);
   const infoHeight = showInfo ? kutuYukseklik : 0;
   const gap = showInfo ? 12 : 0;
   const availableHeight = Math.max(180, height - (padding * 2 + labelHeight + infoHeight + gap + 16));
@@ -135,6 +166,7 @@ function getLayout() {
   return {
     padding,
     showInfo,
+    aktifBilgi,
     infoHeight,
     cameraSize,
     cameraX,
@@ -166,7 +198,7 @@ function draw() {
       fill(0);
       textSize(Math.max(13, width * 0.02));
       textAlign(CENTER, CENTER);
-      text(bilgiler[label], width / 2, infoCenterY, kutuGenislik * 0.9, layout.infoHeight - 16);
+      text(layout.aktifBilgi, width / 2, infoCenterY, kutuGenislik * 0.9, layout.infoHeight - 16);
     }
   }
 }
