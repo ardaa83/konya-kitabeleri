@@ -19,6 +19,11 @@
       padding: 20px;
     }
 
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
     h1 {
       margin: 0 0 8px;
       line-height: 1.2;
@@ -68,14 +73,18 @@
   </style>
 </head>
 <body>
-  <h1>Konya Kitabeleri</h1>
-  <p>Kameradan görüntü alınarak kitabeler otomatik tanınır.</p>
+  <main class="container">
+    <h1>Konya Kitabeleri</h1>
+    <p>Kameradan görüntü alınarak kitabeler otomatik tanınır.</p>
+    <div id="canvas-holder"></div>
+  </main>
 
   <script>
     let classifier;
     let video;
     let label = "Model yükleniyor...";
     let tahminYapildi = false;
+    let p5Canvas;
     let bilgiler = {
       "Konevi Camii Kitabesi": "Bu mübarek mamure içindeki muhakkik ve rabbani alim Sadreddin Muhammed ibn ishak ibn Muhammed'in -Allah kendisinden razı olsun- türbesi; vakviyesinde şartları belli edildiği ve yazıldığı şekilde kendisinin vakfeylediği kitapları ihtiva eden kütüphanesiyle beraber ashabından; kalpleriyle ve kalıplarıyla Tanrı'ya yönelen salih fakirler adına 673 yılı aylarında yapıldı",
       "Haghia Elena Kilisesi Kitabesi": "1- 327 Tarihinde bu şerif kilisemizi Aya Elena 2- Mihail Arhankolos isminde kurdu temeli 3-Halen Kilisemizin üçüncü tamiri şevketlü 4-Sultan Mahmud efendimiz ihsan eyledi emri 5-Epit Robos Sarraf Hacı İliya oldu tekmil nazırı 6- Mihail Arhankolos'un şefaati ile hal teala 7- İmdad edenler ve zahmet çekenlere verecek ecri Sene: 18 Şubat 1833",
@@ -170,10 +179,14 @@
       const w = getBaseCanvasWidth();
       const h = getCanvasHeight(w);
 
-      if (typeof resizeCanvas === "function" && typeof width !== "undefined") {
+      if (typeof resizeCanvas === "function" && typeof width !== "undefined" && p5Canvas) {
         resizeCanvas(w, h);
       } else {
-        createCanvas(w, h);
+        p5Canvas = createCanvas(w, h);
+      }
+
+      if (p5Canvas) {
+        p5Canvas.parent("canvas-holder");
       }
     }
 
